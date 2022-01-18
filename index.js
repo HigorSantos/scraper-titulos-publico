@@ -46,10 +46,9 @@ app.get("/ativos/tesouro-direto", (req, res) => {
           .trim()
           .replace(nomeColunaPreco, "")
           .trim()
-          .replace("R$ ", "")
-          .replace(",", ".");
+          .replace("R$ ", "");
 
-        precoAtivos.push(toFloatOuZero(precoUnitario));
+        precoAtivos.push(precoUnitario);
       }
     });
     const retorno = {};
@@ -68,8 +67,3 @@ app.get("/ativos/tesouro-direto", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Rodando em ${PORT}`);
 });
-
-function toFloatOuZero(val) {
-  val = parseFloat(val);
-  return !isNaN(val) ? val : 0;
-}
