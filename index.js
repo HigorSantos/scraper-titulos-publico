@@ -1,4 +1,4 @@
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 const express = require("express");
 const axios = require("axios");
 const cheerio = require("cheerio");
@@ -13,7 +13,17 @@ const endpoint =
 
 const ativos = [];
 const precoAtivos = [];
-
+const titulosFiltro = [
+  "Tesouro Selic 2024",
+  "Tesouro Selic 2025",
+  "Tesouro IPCA+ com Juros Semestrais 2026",
+  "Tesouro IPCA+ com Juros Semestrais 2030",
+  "Tesouro IPCA+ com Juros Semestrais 2035",
+  "Tesouro IPCA+ com Juros Semestrais 2040",
+  "Tesouro IPCA+ com Juros Semestrais 2050",
+  "Tesouro IPCA+ com Juros Semestrais 2055",
+  "Tesouro Prefixado com Juros Semestrais 2031",
+];
 app.get("/ativos/tesouro-direto", (req, res) => {
   axios(endpoint).then((response) => {
     const html = response.data;
