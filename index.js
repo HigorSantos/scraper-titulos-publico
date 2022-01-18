@@ -34,7 +34,7 @@ app.get("/ativos/tesouro-direto", (req, res) => {
   axios(endpoint)
     .then((response) => {
       const html = response.data;
-
+      console.log(html);
       const $ = cheerio.load(html);
 
       $(`div${elTitulos}`, html).each(function () {
