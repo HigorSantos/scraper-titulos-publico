@@ -27,7 +27,10 @@ const titulosFiltro = [
 app.get("/", (req, res) => {
   res.send("Aqui mesmo nao tem nada, ta. Tu ta no /, caso nao tenha visto.");
 });
+
 app.get("/ativos/tesouro-direto", (req, res) => {
+  const ativo = req.query.ativo;
+
   axios(endpoint).then((response) => {
     const html = response.data;
     const $ = cheerio.load(html);
@@ -50,11 +53,16 @@ app.get("/ativos/tesouro-direto", (req, res) => {
       }
     });
     const retorno = {};
+    if (ativo) {
+      const indexAtivo = ativos.indexOf(ativo);
+      res.send(precoAtivos[indexAtivo] + "");
+    }
+
     ativos.map((a, index) => {
       retorno[a] = precoAtivos[index];
     });
 
-    res.send(retorno);
+    res.json(retorno);
   });
 });
 app.listen(PORT, () => {
