@@ -24,6 +24,9 @@ const titulosFiltro = [
   "Tesouro IPCA+ com Juros Semestrais 2055",
   "Tesouro Prefixado com Juros Semestrais 2031",
 ];
+app.get("/", (req, res) => {
+  res.send("Aqui mesmo nao tem nada, ta. Tu ta no /, caso nao tenha visto.");
+});
 app.get("/ativos/tesouro-direto", (req, res) => {
   axios(endpoint).then((response) => {
     const html = response.data;
@@ -39,8 +42,11 @@ app.get("/ativos/tesouro-direto", (req, res) => {
         precoUnitario = precoUnitario
           .trim()
           .replace(nomeColunaPreco, "")
-          .trim();
-        precoAtivos.push(precoUnitario);
+          .trim()
+          .replace("R$ ", "")
+          .replace(",", ".");
+
+        precoAtivos.push(toFloatOuZero(precoUnitario));
       }
     });
     const retorno = {};
@@ -54,3 +60,8 @@ app.get("/ativos/tesouro-direto", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Rodando em ${PORT}`);
 });
+
+function toFloatOuZero(val) {
+  val = parseFloat(val);
+  return !isNaN(val) ? val : 0;
+}
