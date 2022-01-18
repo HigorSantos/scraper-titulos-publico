@@ -5,14 +5,14 @@ const cheerio = require("cheerio");
 
 const app = express();
 
+const elTitulos = ".list.tesouro";
 const elNomeAtivo = "abs-nome-atv";
 const elPreco = "td span.nome-coluna";
 const nomeColunaPreco = "Preço Unitário";
-const endpoint =
-  "https://conteudos.xpi.com.br/renda-fixa/lista-de-emissoes/tesouro-direto/";
+const endpoint = "https://statusinvest.com.br/";
 
-const ativos = [];
-const precoAtivos = [];
+const ativos = {};
+
 const titulosFiltro = [
   "Tesouro Selic 2024",
   "Tesouro Selic 2025",
@@ -33,37 +33,34 @@ app.get("/ativos/tesouro-direto", (req, res) => {
 
   axios(endpoint).then((response) => {
     const html = response.data;
+
     const $ = cheerio.load(html);
 
-    $(`.${elNomeAtivo}`, html).each(function () {
-      ativos.push($(this).text().trim());
+    $(`div${elTitulos}`, html).each(function () {
+      const nomeAtivo = $(this).find("a.info h4").text().replaceAll("\n", "");
+      const precoAtivo = $(this)
+        .find("a.info div")
+        .slice(3, 4)
+        .find("span")
+        .text()
+        .trim()
+        .replaceAll("\n", "")
+        .replace("vendaR$", "")
+        .replace(".", "")
+        .replace("venda R$", "");
+
+      ativos[nomeAtivo] = precoAtivo;
     });
 
-    $(elPreco, html).each(function () {
-      if ($(this).text() === nomeColunaPreco) {
-        let precoUnitario = $(this).parent().last().text();
-        precoUnitario = precoUnitario
-          .trim()
-          .replace(nomeColunaPreco, "")
-          .trim()
-          .replace("R$ ", "");
-
-        precoAtivos.push(precoUnitario);
-      }
-    });
     const retorno = {};
     if (ativo) {
-      const indexAtivo = ativos.indexOf(ativo);
-      res.send(precoAtivos[indexAtivo] + "");
+      res.send(ativos[ativo] + "");
+      return;
     }
-
-    ativos.map((a, index) => {
-      retorno[a] = precoAtivos[index];
-    });
-
-    res.json(retorno);
+    res.json(ativos);
   });
 });
+
 app.listen(PORT, () => {
   console.log(`Rodando em ${PORT}`);
 });
