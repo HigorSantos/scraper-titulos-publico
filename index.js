@@ -33,33 +33,41 @@ app.get("/ativos/tesouro-direto", (req, res) => {
 
   axios(endpoint)
     .then((response) => {
-      const html = response.data;
+      try {
+        const html = response.data;
 
-      const $ = cheerio.load(html);
+        const $ = cheerio.load(html);
 
-      $(`div${elTitulos}`, html).each(function () {
-        ponto = $(this);
-        const nomeAtivo = $(this).find("a.info h4").text().replaceAll("\n", "");
-        const precoAtivo = $(this)
-          .find("a.info div")
-          .slice(3, 4)
-          .find("span")
-          .text()
-          .trim()
-          .replaceAll("\n", "")
-          .replace("vendaR$", "")
-          .replace(".", "")
-          .replace("venda R$", "");
+        $(`div${elTitulos}`, html).each(function () {
+          ponto = $(this);
+          const nomeAtivo = $(this)
+            .find("a.info h4")
+            .text()
+            .replaceAll("\n", "");
+          const precoAtivo = $(this)
+            .find("a.info div")
+            .slice(3, 4)
+            .find("span")
+            .text()
+            .trim()
+            .replaceAll("\n", "")
+            .replace("vendaR$", "")
+            .replace(".", "")
+            .replace("venda R$", "");
 
-        ativos[nomeAtivo] = precoAtivo;
-      });
+          ativos[nomeAtivo] = precoAtivo;
+        });
 
-      const retorno = {};
-      if (ativo) {
-        res.send(ativos[ativo] + "");
-        return;
+        const retorno = {};
+        if (ativo) {
+          res.send(ativos[ativo] + "");
+          return;
+        }
+        res.json(ativos);
+      } catch (erro) {
+        console.error(erro);
+        res.json({ erro, ponto });
       }
-      res.json(ativos);
     })
     .catch((erro) => {
       console.error(erro);
