@@ -2,6 +2,7 @@ const PORT = process.env.PORT || 8000;
 const express = require("express");
 const axios = require("axios");
 const cheerio = require("cheerio");
+const { text } = require("cheerio/lib/api/manipulation");
 
 const app = express();
 
@@ -43,7 +44,7 @@ app.get("/ativos/tesouro-direto", (req, res) => {
 
           let nomeAtivo = $(this).find("a.info h4");
           if (nomeAtivo.length > 0) {
-            nomeAtivo = nomeAtivo.replace(/\n/g, "");
+            nomeAtivo = nomeAtivo.text().replace(/\n/g, "");
 
             let precoAtivo = $(this).find("a.info div");
             console.log(precoAtivo.html());
