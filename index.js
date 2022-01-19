@@ -43,10 +43,7 @@ app.get("/ativos/tesouro-direto", (req, res) => {
 
           let nomeAtivo = $(this).find("a.info h4");
           if (nomeAtivo.length > 0) {
-            console.log("----", nomeAtivo.html(), "----");
-            const p_nomeAtivo = nomeAtivo.html() + "";
-            console.log("----", p_nomeAtivo, "----");
-            nomeAtivo = p_nomeAtivo.replaceAll("\n", "");
+            nomeAtivo = nomeAtivo.replace(/\n/g, "");
 
             let precoAtivo = $(this).find("a.info div");
             console.log(precoAtivo.html());
@@ -56,7 +53,7 @@ app.get("/ativos/tesouro-direto", (req, res) => {
                 .find("span")
                 .text()
                 .trim()
-                .replaceAll("\n", "")
+                .replace(/\n/g, "")
                 .replace("vendaR$", "")
                 .replace(".", "")
                 .replace("venda R$", "");
