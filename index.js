@@ -43,7 +43,7 @@ app.get("/ativos/tesouro-direto", (req, res) => {
 
           let nomeAtivo = $(this).find("a.info h4");
           if (nomeAtivo.length > 0) {
-            nomeAtivo = nomeAtivo.html().replaceAll("\n", "");
+            nomeAtivo = nomeAtivo.html()?.replaceAll("\n", "");
 
             let precoAtivo = $(this).find("a.info div");
             console.log(precoAtivo.html());
