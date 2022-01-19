@@ -12,7 +12,7 @@ const nomeColunaPreco = "Preço Unitário";
 const endpoint = "https://statusinvest.com.br/";
 
 const ativos = {};
-
+let ponto = null;
 const titulosFiltro = [
   "Tesouro Selic 2024",
   "Tesouro Selic 2025",
@@ -34,12 +34,11 @@ app.get("/ativos/tesouro-direto", (req, res) => {
   axios(endpoint)
     .then((response) => {
       const html = response.data;
-      console.log(html);
-      res.send(html);
-      return;
+
       const $ = cheerio.load(html);
 
       $(`div${elTitulos}`, html).each(function () {
+        ponto = $(this);
         const nomeAtivo = $(this).find("a.info h4").text().replaceAll("\n", "");
         const precoAtivo = $(this)
           .find("a.info div")
@@ -64,7 +63,7 @@ app.get("/ativos/tesouro-direto", (req, res) => {
     })
     .catch((erro) => {
       console.error(erro);
-      res.send(erro);
+      res.json({ erro, ponto });
     });
 });
 
