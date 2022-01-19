@@ -43,6 +43,7 @@ app.get("/ativos/tesouro-direto", (req, res) => {
 
           let nomeAtivo = $(this).find("a.info h4");
           if (nomeAtivo.length > 0) {
+            console.log(nomeAtivo);
             nomeAtivo = nomeAtivo.text().replaceAll("\n", "");
 
             let precoAtivo = $(this).find("a.info div");
@@ -75,7 +76,7 @@ app.get("/ativos/tesouro-direto", (req, res) => {
     })
     .catch((erro) => {
       console.error(erro);
-      res.json({ erro, ponto });
+      res.json({ e: erro, p: ponto.text() });
     });
 });
 
